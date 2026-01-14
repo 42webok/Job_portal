@@ -1,13 +1,13 @@
  <div class="col-lg-3">
                 <div class="card border-0 shadow mb-4 p-3">
                     <div class="s-body text-center mt-3">
-                        @if($user->image)
-                        <img src="{{ asset('uploads/profile_images/'.$user->image) }}" alt="avatar"  class="rounded-circle img-fluid" style="width: 150px;height:150px;object-fit:cover;">
+                        @if(Auth::user()->image)
+                        <img src="{{ asset('uploads/profile_images/'.Auth::user()->image) }}" alt="avatar"  class="rounded-circle img-fluid" style="width: 150px;height:150px;object-fit:cover;">
                         @else
                         <img src="{{ asset('assets/images/avatar7.png') }}" alt="avatar"  class="rounded-circle img-fluid" style="width: 150px;">
                         @endif
-                        <h5 class="mt-3 pb-0">{{ $user->name }}</h5>
-                        <p class="text-muted mb-1 fs-6">{{ $user->designation != '' ? $user->designation : 'Not Specified' }}</p>
+                        <h5 class="mt-3 pb-0">{{ Auth::user()->name }}</h5>
+                        <p class="text-muted mb-1 fs-6">{{ Auth::user()->designation != '' ? Auth::user()->designation : 'Not Specified' }}</p>
                         <div class="d-flex justify-content-center mb-2">
                             <button data-bs-toggle="modal" data-bs-target="#exampleModal" type="button" class="btn btn-primary">Change Profile Picture</button>
                         </div>
@@ -20,10 +20,10 @@
                                 <a href="account.html">Account Settings</a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <a href="post-job.html">Post a Job</a>
+                                <a href="{{ route('post_job') }}">Post a Job</a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <a href="my-jobs.html">My Jobs</a>
+                                <a href="{{ route('my_jobs') }}">My Jobs</a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                 <a href="job-applied.html">Jobs Applied</a>

@@ -27,6 +27,9 @@ Route::middleware('guest')->group(function(){
 
 Route::middleware('auth')->group(function(){
     Route::get('profile', [MainController::class, 'profile'])->name('profile');
+    Route::get('my_jobs', [MainController::class, 'myJobs'])->name('my_jobs');
+    Route::get('post_job', [MainController::class, 'postJob'])->name('post_job');
+    Route::post('save_job_data', [MainController::class, 'postJobData'])->name('save_job_data');
     Route::post('profile-update', [MainController::class, 'profileUpdate'])->name('profile-update');
     Route::post('profile-image-update', [MainController::class, 'updateProfilePicture'])->name('profile-image-update');
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');

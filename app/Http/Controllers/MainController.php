@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\CategoriesModel;
+use App\Models\JobModel;
+use App\Models\JobTypeModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -66,6 +69,67 @@ class MainController extends Controller
 
          
     }
+
+
+    // post the job 
+    public function postJob(){
+
+        $categories = CategoriesModel::where('status', 1)->get();
+        $job_types = JobTypeModel::where('status', 1)->get();
+        
+
+        return view('frontend.profile.post_job', compact('categories', 'job_types'));
+    }
+
+    public function postJobData(Request $request){
+        $validate = $request->validate([
+            "title"=> "required|string|max:255",
+            "category"=> "required|exists:categories,id",
+            "job_type"=> "required|exists:job_type,id",
+            "vacancy"=> "required|integer|min:1",
+            "salary"=> "nullable|string|max:255",
+            "location"=> "nullable|string|max:255",
+            "description"=> "required|string",
+            "benefits"=> "nullable|string",
+            "responsibility"=> "nullable|string",
+            "qualifications"=> "nullable|string",
+            "experience"=> "nullable|string",
+        ]);
+
+        if($validate){
+            // Save job data to database (Assuming you have a Job model)
+            $job = new JobModel();
+            $job->title = $request->title;
+            $job->category_id = $request->category;
+            $job->job_type_id = $request->job_type;
+            $job->vacancy = $request->vacancy;
+            $job->salary = $request->salary;
+            $job->location = $request->location;
+            $job->description = $request->description;
+            $job->benefits = $request->benefits;
+            $job->responsibility = $request->responsibility;
+            $job->qualifications = $request->qualifications;
+            $job->keywords = $request->keywords;
+            $job->experience = $request->experience;
+            $job->company_name = $request->company_name;
+            $job->company_website = $request->company_website;
+            $job->company_location = $request->company_location;
+            $job->status = 1; // Assuming 1 is for active/published jobs
+            $job->save();
+
+            return redirect()->back()->with('success', 'Job posted successfully.');
+        }else{
+            return redirect()->back()->with('error', 'Job posting failed. Please try again.');
+        }
+    }
+
+//    my jobs code start here 
+     public function myJobs(){
+        $jobs = JobModel::with(['category', 'jobType'])->where('status' , 1)->paginate(10);
+        return view('frontend.profile.my_jobs', compact('jobs'));
+     }
+
+
 }
 
 
