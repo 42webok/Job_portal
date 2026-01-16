@@ -18,6 +18,6 @@ class CategoriesModel extends Model
     ];
 
     public function job_details(){
-        return $this->hasMany(JobModel::class);
+        return $this->hasMany(JobModel::class ,'category_id','id');
     }
 }

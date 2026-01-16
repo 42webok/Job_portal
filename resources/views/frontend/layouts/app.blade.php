@@ -12,6 +12,20 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" />
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
+    <style>
+        .page-link{
+            color: #A8DF8E !important;
+        }
+        .page-item.active .page-link{
+            color: white !important;
+            background-color: #A8DF8E !important;
+            border-color: #A8DF8E !important;
+        }
+        .form-check-input:checked {
+            background-color: #A8DF8E !important;
+            border-color: #A8DF8E !important;
+        }
+    </style>
 </head>
 <body data-instant-intensity="mousedown">
     {{-- header code here by AR --}}
@@ -28,7 +42,7 @@
 						<a class="nav-link" aria-current="page" href="{{ route('index') }}">Home</a>
 					</li>	
 					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="jobs.html">Find Jobs</a>
+						<a class="nav-link" aria-current="page" href="{{ route('jobs.index') }}">Find Jobs</a>
 					</li>										
 				</ul>				
 				@if(Auth::check())
@@ -92,6 +106,7 @@
 <script src="{{ asset('assets/js/custom.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+@stack('scripts')
 @if(session('success'))
 <script>
 Swal.fire({

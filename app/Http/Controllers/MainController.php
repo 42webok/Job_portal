@@ -99,6 +99,7 @@ class MainController extends Controller
         if($validate){
             // Save job data to database (Assuming you have a Job model)
             $job = new JobModel();
+            $job->user_id = Auth::id();
             $job->title = $request->title;
             $job->category_id = $request->category;
             $job->job_type_id = $request->job_type;
@@ -129,6 +130,76 @@ class MainController extends Controller
         return view('frontend.profile.my_jobs', compact('jobs'));
      }
 
+//  edit job code start from here   
+    public function editJob($id){
+        $job = JobModel::findOrFail($id);
+        $userId = $job->user_id;
+        if($userId != Auth::id()){
+            abort(403, 'Unauthorized action.');
+        }
+        $categories = CategoriesModel::where('status', 1)->get();
+        $job_types = JobTypeModel::where('status', 1)->get();
+        return view('frontend.profile.edit_job', compact('job', 'categories', 'job_types'));
+    }
+
+
+    public function updateJob(Request $request, $id){
+       $job = JobModel::findOrFail($id);
+
+        if($job->user_id != Auth::id()){
+            abort(403, 'Unauthorized action.');
+        }
+      
+        $validate = $request->validate([
+            "title"=> "required|string|max:255",
+            "category"=> "required|exists:categories,id",
+            "job_type"=> "required|exists:job_type,id",
+            "vacancy"=> "required|integer|min:1",
+            "salary"=> "nullable|string|max:255",
+            "location"=> "nullable|string|max:255",
+            "description"=> "required|string",
+            "benefits"=> "nullable|string",
+            "responsibility"=> "nullable|string",
+            "qualifications"=> "nullable|string",
+            "experience"=> "nullable|string",
+        ]);
+
+        if($validate){
+            $job->title = $request->title;
+            $job->category_id = $request->category;
+            $job->job_type_id = $request->job_type;
+            $job->vacancy = $request->vacancy;
+            $job->salary = $request->salary;
+            $job->location = $request->location;
+            $job->description = $request->description;
+            $job->benefits = $request->benefits;
+            $job->responsibility = $request->responsibility;
+            $job->qualifications = $request->qualifications;
+            $job->keywords = $request->keywords;
+            $job->experience = $request->experience;
+            $job->company_name = $request->company_name;
+            $job->company_website = $request->company_website;
+            $job->company_location = $request->company_location;
+            $job->status = 1; // Assuming 1 is for active/published jobs
+            $job->save();
+
+            return redirect()->route('my_jobs')->with('success', 'Job updated successfully.');
+        }else{
+            return redirect()->back()->with('error', 'Job update failed. Please try again.');
+        }
+    }
+
+    public function destroy($id){
+        $job = JobModel::findOrFail($id);
+
+        if($job->user_id != Auth::id()){
+            abort(403, 'Unauthorized action.');
+        }
+
+        $job->delete();
+
+        return redirect()->back()->with('success', 'Job deleted successfully.');
+    }
 
 }
 
