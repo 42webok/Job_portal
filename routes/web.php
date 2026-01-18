@@ -19,6 +19,7 @@ use App\Http\Controllers\JobController;
 
 Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::get('jobs', [JobController::class, 'index'])->name('jobs.index');
+Route::get('job_details/{id}', [JobController::class, 'jobDetails'])->name('jobs.details');
 
 
 Route::middleware('guest')->group(function(){

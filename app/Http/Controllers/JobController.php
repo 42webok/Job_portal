@@ -64,4 +64,14 @@ class JobController extends Controller
         $categories = CategoriesModel::where('status', 1)->get();
         return view('frontend.jobs.index', compact('jobs', 'jobTypes', 'categories' , 'job_types'));
     }
+
+    // Job Details
+    public function jobDetails($id){
+        $job = JobModel::with('jobType', 'category')->where('id', $id)->first();
+        if(!$job){
+            abort(404);
+        }
+        return view('frontend.jobs.job_details', compact('job'));
+    }
+
 }
