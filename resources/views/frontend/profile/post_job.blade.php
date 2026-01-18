@@ -125,7 +125,7 @@
                                 <option value="7">7 Years</option>
                                 <option value="8">8 Years</option>
                                 <option value="9">9 Years</option>
-                                <option value="10+">10+ Years</option>
+                                <option value="10_plus">10+ Years</option>
                             </select>
                         </div>
                         
