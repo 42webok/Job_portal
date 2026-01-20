@@ -14,6 +14,11 @@ class AuthController extends Controller
         return view("frontend.auth.register");
     }
 
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('login')->with('success', 'Logged out successfully.');
+    }
+
     public function registerSave(Request $request){
         // Validate and create the user
         $validate = $request->validate([
@@ -53,13 +58,10 @@ class AuthController extends Controller
            }
         }else{
             return redirect()->back()->with('error', 'Login failed. Please check your credentials and try again.');
-        }
+        } 
 
     }
 
-    public function logout(){
-        Auth::logout();
-        return redirect()->route('login')->with('success', 'Logged out successfully.');
-    }
+    
 
 }

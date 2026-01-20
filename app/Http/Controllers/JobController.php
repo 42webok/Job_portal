@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\JobModel;
 use App\Models\JobTypeModel;
+use App\Models\JobApplication;
 use App\Models\CategoriesModel;
 
 class JobController extends Controller
@@ -72,6 +73,38 @@ class JobController extends Controller
             abort(404);
         }
         return view('frontend.jobs.job_details', compact('job'));
+    }
+
+    // Apply for Job
+    public function applyForJob(Request $request){
+        if(!auth()->check()){
+            return response()->json(['error' => 'You must be logged in to apply for a job.'], 401);
+        }
+
+        $job = JobModel::where('id', $request->job_id)->first();
+        if(!$job){
+            return response()->json(['error' => 'Job not found.'], 404);
+        }
+        if($job->user_id == auth()->id()){
+            return response()->json(['error' => 'You cannot apply for your own job.'], 403);
+        }
+
+        // not apply on same job again
+        $existingApplication = JobApplication::where('job_id', $request->job_id)
+            ->where('applicant_id', auth()->id())
+            ->first();
+        if($existingApplication){
+            return response()->json(['error' => 'You have already applied for this job.'], 409);
+        }
+
+        $application = new JobApplication();
+        $application->job_id = $request->job_id;
+        $application->applicant_id = auth()->id();
+        $application->job_owner_id = $job->user_id;
+        $application->applied_at = now();
+        $application->save();
+
+        return response()->json(['message' => 'Application submitted successfully.']);
     }
 
 }

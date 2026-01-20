@@ -20,6 +20,7 @@ use App\Http\Controllers\JobController;
 Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::get('jobs', [JobController::class, 'index'])->name('jobs.index');
 Route::get('job_details/{id}', [JobController::class, 'jobDetails'])->name('jobs.details');
+ Route::post('apply_job', [JobController::class, 'applyForJob'])->name('apply_job');
 
 
 Route::middleware('guest')->group(function(){
@@ -39,5 +40,6 @@ Route::middleware('auth')->group(function(){
     Route::post('profile-update', [MainController::class, 'profileUpdate'])->name('profile-update');
     Route::get('delete_job/{id}', [MainController::class, 'destroy'])->name('delete_job');
     Route::post('profile-image-update', [MainController::class, 'updateProfilePicture'])->name('profile-image-update');
+   
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 });

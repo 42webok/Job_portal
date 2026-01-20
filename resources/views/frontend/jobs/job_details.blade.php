@@ -70,7 +70,7 @@
                         <div class="border-bottom"></div>
                         <div class="pt-3 text-end">
                             <a href="#" class="btn btn-secondary">Save</a>
-                            <a href="#" class="btn btn-primary">Apply</a>
+                            <a href="javascript:void(0);" onclick='applyForJob({{ $job->id }})' class="btn btn-primary">Apply</a>
                         </div>
                     </div>
                 </div>
@@ -133,3 +133,59 @@
 
 @endsection
 
+@push('scripts')
+<script>
+    function applyForJob(jobId) {
+        // Implement the job application logic herr
+        $.ajax({
+            url: '{{ route("apply_job") }}',
+            type: 'POST',
+            data: {
+                job_id: jobId
+            },
+            success: function(response) {
+                console.log(response);
+                
+               if(response.message){
+                   Swal.fire({
+                       title: 'Success!',
+                       text: response.message,
+                       icon: 'success',
+                       showConfirmButton: false,
+                       timer: 3000
+                   });
+               }
+               if(response.error){
+                   Swal.fire({
+                       title: 'Error!',
+                       text: response.error,
+                       icon: 'error',
+                       showConfirmButton: false,
+                       timer: 3000
+                   });
+               }
+            },
+            error: function(xhr , status, error) {
+                if (xhr.status === 403) {
+                   Swal.fire({
+                       title: 'Error!',
+                       text: xhr.responseJSON.error,
+                       icon: 'error',
+                       showConfirmButton: false,
+                       timer: 3000
+                   });
+                } else {
+                     Swal.fire({
+                       title: 'Error!',
+                       text: xhr.responseJSON.error,
+                       icon: 'error',
+                       showConfirmButton: false,
+                       timer: 3000
+                   });
+                }
+            }
+        });
+    }
+</script>
+
+@endpush
