@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\JobModel;
+use App\Models\User;
 use App\Models\JobTypeModel;
 use App\Models\JobApplication;
 use App\Models\CategoriesModel;
+use App\Mail\JobNotificationMail;
+use Illuminate\Support\Facades\Mail;
 
 class JobController extends Controller
 {
@@ -103,6 +106,20 @@ class JobController extends Controller
         $application->job_owner_id = $job->user_id;
         $application->applied_at = now();
         $application->save();
+
+        $owner_data = User::where('id', $job->user_id)->first();
+
+
+        // send mail work to job owner about new application
+        $mail_data = [
+            'owner_name' => $owner_data->name,
+            'job_title' => $job->title,
+            'applicant_name' => auth()->user()->name,
+            'applicant_email' => auth()->user()->email,
+            'applicant_phone' => auth()->user()->phone,
+        ];
+        Mail::to($owner_data->email)->send(new JobNotificationMail($mail_data));
+
 
         return response()->json(['message' => 'Application submitted successfully.']);
     }
