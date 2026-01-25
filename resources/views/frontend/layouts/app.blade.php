@@ -25,6 +25,10 @@
             background-color: #A8DF8E !important;
             border-color: #A8DF8E !important;
         }
+        .save_mark{
+            background-color: #00D363 !important;
+            color: white !important;
+        }
     </style>
 </head>
 <body data-instant-intensity="mousedown">

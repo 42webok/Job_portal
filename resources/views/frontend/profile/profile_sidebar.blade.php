@@ -17,7 +17,7 @@
                     <div class="card-body p-0">
                         <ul class="list-group list-group-flush ">
                             <li class="list-group-item d-flex justify-content-between p-3">
-                                <a href="account.html">Account Settings</a>
+                                <a href="{{ route('profile') }}">Account Settings</a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                 <a href="{{ route('post_job') }}">Post a Job</a>
@@ -26,10 +26,10 @@
                                 <a href="{{ route('my_jobs') }}">My Jobs</a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <a href="job-applied.html">Jobs Applied</a>
+                                <a href="{{ route('applied_jobs') }}">Jobs Applied</a>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <a href="saved-jobs.html">Saved Jobs</a>
+                                <a href="{{ route('saved_jobs') }}">Saved Jobs</a>
                             </li>
                             <a class="btn btn-primary w-100" href="{{ route('logout') }}" >Logout</a>
                         </ul>

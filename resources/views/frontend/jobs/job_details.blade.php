@@ -1,3 +1,4 @@
+
 @extends('frontend.layouts.app')
 
 @section('main')
@@ -38,7 +39,7 @@
                             </div>
                             <div class="jobs_right">
                                 <div class="apply_now">
-                                    <a class="heart_mark" href="#"> <i class="fa fa-heart-o" aria-hidden="true"></i></a>
+                                    <a class="heart_mark {{ $get_applied_job == true ? 'save_mark' : '' }}" onclick='saveJob({{ $job->id }})' href="javascript:void(0);"> <i class="fa fa-heart-o" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -69,7 +70,7 @@
                         </div>
                         <div class="border-bottom"></div>
                         <div class="pt-3 text-end">
-                            <a href="#" class="btn btn-secondary">Save</a>
+                            <a href="javascript:void(0);" onclick="saveJob({{ $job->id }})" class="btn btn-secondary">Save</a>
                             <a href="javascript:void(0);" onclick='applyForJob({{ $job->id }})' class="btn btn-primary">Apply</a>
                         </div>
                     </div>
@@ -139,6 +140,60 @@
         // Implement the job application logic herr
         $.ajax({
             url: '{{ route("apply_job") }}',
+            type: 'POST',
+            data: {
+                job_id: jobId
+            },
+            success: function(response) {
+                console.log(response);
+                
+               if(response.message){
+                   Swal.fire({
+                       title: 'Success!',
+                       text: response.message,
+                       icon: 'success',
+                       showConfirmButton: false,
+                       timer: 3000
+                   });
+               }
+               if(response.error){
+                   Swal.fire({
+                       title: 'Error!',
+                       text: response.error,
+                       icon: 'error',
+                       showConfirmButton: false,
+                       timer: 3000
+                   });
+               }
+            },
+            error: function(xhr , status, error) {
+                if (xhr.status === 403) {
+                   Swal.fire({
+                       title: 'Error!',
+                       text: xhr.responseJSON.error,
+                       icon: 'error',
+                       showConfirmButton: false,
+                       timer: 3000
+                   });
+                } else {
+                     Swal.fire({
+                       title: 'Error!',
+                       text: xhr.responseJSON.error,
+                       icon: 'error',
+                       showConfirmButton: false,
+                       timer: 3000
+                   });
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    function saveJob(jobId) {
+        // Implement the job application logic herr
+        $.ajax({
+            url: '{{ route("save_job") }}',
             type: 'POST',
             data: {
                 job_id: jobId

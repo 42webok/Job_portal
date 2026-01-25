@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\JobModel;
+use App\Models\SavedJobs;
 use App\Models\User;
 use App\Models\JobTypeModel;
 use App\Models\JobApplication;
@@ -75,7 +76,11 @@ class JobController extends Controller
         if(!$job){
             abort(404);
         }
-        return view('frontend.jobs.job_details', compact('job'));
+       $get_applied_job = SavedJobs::where('job_id', $job->id)
+        ->where('user_id', auth()->id())
+        ->exists();
+
+        return view('frontend.jobs.job_details', compact('job' , 'get_applied_job'));
     }
 
     // Apply for Job
@@ -122,6 +127,52 @@ class JobController extends Controller
 
 
         return response()->json(['message' => 'Application submitted successfully.']);
+    }
+
+
+    // save  Job
+    public function saveJobs(Request $request){
+        if(!auth()->check()){
+            return response()->json(['error' => 'You must be logged in to save for a job.'], 401);
+        }
+
+        $job = JobModel::where('id', $request->job_id)->first();
+        if(!$job){
+            return response()->json(['error' => 'Job not found.'], 404);
+        }
+        if($job->user_id == auth()->id()){
+            return response()->json(['error' => 'You cannot save for your own job.'], 403);
+        }
+
+        // not apply on same job again
+        $existingApplication = SavedJobs::where('job_id', $request->job_id)
+            ->where('user_id', auth()->id())
+            ->first();
+        if($existingApplication){
+            return response()->json(['error' => 'You have already saved this job.'], 409);
+        }
+
+        $application = new SavedJobs();
+        $application->job_id = $request->job_id;
+        $application->user_id = auth()->id();
+        $application->created_at = now();
+        $application->save();
+
+        // $owner_data = User::where('id', $job->user_id)->first();
+
+
+        // send mail work to job owner about new application
+        // $mail_data = [
+        //     'owner_name' => $owner_data->name,
+        //     'job_title' => $job->title,
+        //     'applicant_name' => auth()->user()->name,
+        //     'applicant_email' => auth()->user()->email,
+        //     'applicant_phone' => auth()->user()->phone,
+        // ];
+        // Mail::to($owner_data->email)->send(new JobNotificationMail($mail_data));
+
+
+        return response()->json(['message' => 'Job saved successfully.']);
     }
 
 }

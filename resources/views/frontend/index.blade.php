@@ -16,12 +16,13 @@
 <section class="section-1 py-5 "> 
     <div class="container">
         <div class="card border-0 shadow p-5">
-            <div class="row">
+           <form action="{{ route('jobs.index') }}">
+             <div class="row">
                 <div class="col-md-3 mb-3 mb-sm-3 mb-lg-0">
-                    <input type="text" class="form-control" name="search" id="search" placeholder="Keywords">
+                    <input type="text" class="form-control" name="keyword" id="keywords" placeholder="Keywords">
                 </div>
                 <div class="col-md-3 mb-3 mb-sm-3 mb-lg-0">
-                    <input type="text" class="form-control" name="search" id="search" placeholder="Location">
+                    <input type="text" class="form-control" name="location" id="location" placeholder="Location">
                 </div>
                 <div class="col-md-3 mb-3 mb-sm-3 mb-lg-0">
                     <select name="category" id="category" class="form-control">
@@ -34,11 +35,12 @@
                 
                 <div class=" col-md-3 mb-xs-3 mb-sm-3 mb-lg-0">
                     <div class="d-grid gap-2">
-                        <a href="jobs.html" class="btn btn-primary btn-block">Search</a>
+                        <button type="submit" class="btn btn-primary btn-block">Search</button>
                     </div>
                     
                 </div>
-            </div>            
+            </div> 
+            </form>           
         </div>
     </div>
 </section>

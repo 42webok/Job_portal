@@ -38,4 +38,10 @@ class JobModel extends Model
     public function category(){
         return $this->belongsTo(CategoriesModel::class, 'category_id', 'id');
     }
+
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class, 'job_id');
+    }
+
 }

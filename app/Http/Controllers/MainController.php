@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\CategoriesModel;
 use App\Models\JobModel;
 use App\Models\JobTypeModel;
+use App\Models\JobApplication;
+use App\Models\SavedJobs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -126,7 +128,7 @@ class MainController extends Controller
 
 //    my jobs code start here 
      public function myJobs(){
-        $jobs = JobModel::with(['category', 'jobType'])->where('status' , 1)->paginate(10);
+        $jobs = JobModel::with(['category', 'jobType' , 'applications'])->where(['status'=> 1 , 'user_id'=>Auth::id()])->paginate(10);
         return view('frontend.profile.my_jobs', compact('jobs'));
      }
 
@@ -200,6 +202,57 @@ class MainController extends Controller
 
         return redirect()->back()->with('success', 'Job deleted successfully.');
     }
+
+    public function deleteApply($id){
+        $application = JobApplication::findOrFail($id);
+        if($application->applicant_id != Auth::id()){
+            abort(403, 'Unauthorized action.');
+        }
+        $application->delete();
+        return redirect()->back()->with('success', 'Application deleted successfully.');
+    }
+
+
+    public function deleteSaved($id){
+        $savedJobs = SavedJobs::findOrFail($id);
+        if($savedJobs->user_id != Auth::id()){
+            abort(403, 'Unauthorized action.');
+        }
+        $savedJobs->delete();
+        return redirect()->back()->with('success', 'Saved remove successfully.');
+    }
+
+    //    applied jobs code start here 
+    public function appliedJobs()
+{
+    $job_applications = JobApplication::where('applicant_id', Auth::id())
+        ->with([
+            'jobs',
+            'jobs.applications',
+            'jobs.jobType'
+        ])
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+
+    return view('frontend.profile.applied_jobs', compact('job_applications'));
+}
+
+    //    saved jobs code start here 
+    public function savedJobs()
+{
+    $savedJobs = SavedJobs::where('user_id', Auth::id())
+        ->with([
+            'jobs',
+            'jobs.applications',
+            'jobs.jobType'
+        ])
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+
+    return view('frontend.profile.saved_jobs', compact('savedJobs'));
+}
+
+
 
 }
 

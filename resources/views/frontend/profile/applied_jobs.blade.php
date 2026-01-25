@@ -23,11 +23,11 @@
                     <div class="card-body card-form">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h3 class="fs-4 mb-1">My Jobs</h3>
+                                <h3 class="fs-4 mb-1">My Applied Jobs</h3>
                             </div>
-                            <div style="margin-top: -10px;">
-                                <a href="{{ route('post_job') }}" class="btn btn-primary">Post a Job</a>
-                            </div>
+                            {{-- <div style="margin-top: -10px;">
+                                <a href="{{-- route('post_job') }}" class="btn btn-primary">Post a Job</a>
+                            </div> --}}
                             
                         </div>
                         <div class="table-responsive">
@@ -42,17 +42,17 @@
                                     </tr>
                                 </thead>
                                 <tbody class="border-0">
-                                   @forelse($jobs as $job)
+                                   @forelse($job_applications as $job)
                                     <tr class="active">
                                         <td>
-                                            <div class="job-name fw-500">{{ $job->title }}</div>
-                                            <div class="info1">{{ $job->jobType->name }} . {{ $job->location }}</div>
+                                            <div class="job-name fw-500">{{ $job->jobs->title }}</div>
+                                            <div class="info1">{{ $job->jobs->jobType->name }} . {{ $job->jobs->location }}</div>
                                         </td>
                                         <td>{{ $job->created_at->format('d M, Y') }}</td>
-                                        <td>{{ $job->applications->count() }} Applications</td>
+                                        <td>{{ $job->jobs->applications->count() }} Applications</td>
                                         <td>
                                             <div class="job-status text-capitalize">
-                                                @if($job->status == 1)
+                                                @if($job->jobs->status == 1)
                                                     <span class="badge bg-success">Active</span>
                                                 @else
                                                     <span class="badge bg-danger">Inactive</span>
@@ -65,21 +65,24 @@
                                                     <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><a class="dropdown-item" href="{{ route('jobs.details', $job->id) }}"> <i class="fa fa-eye" aria-hidden="true"></i> View</a></li>
-                                                    <li><a class="dropdown-item" href="{{ route('edit_job', $job->id) }}"><i class="fa fa-edit" aria-hidden="true"></i> Edit</a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('jobs.details', $job->jobs->id) }}"> <i class="fa fa-eye" aria-hidden="true"></i> View</a></li>
                                                     <li><a class="dropdown-item delete-btn" href="javascript:void(0);" data-id="{{ $job->id }}"><i class="fa fa-trash" aria-hidden="true"></i> Remove</a></li>
                                                 </ul>
                                             </div>
                                         </td>
                                     </tr>
                                     @empty
-                                    <tr colspan='5'>
-                                        <td>No job found !</td>
-                                    </tr>
+                                    <tr>
+                                       <td colspan="5">
+                                          Application not found !
+                                       </td>
+                                   </tr>
+                                        
+                                    
                                    @endforelse
                                    <tr>
                                        <td colspan="5">
-                                           {{ $jobs->links() }}
+                                           {{ $job_applications->links() }}
                                        </td>
                                    </tr>
                                 </tbody>
@@ -110,7 +113,7 @@ document.querySelectorAll('.delete-btn').forEach(btn => {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-               window.location.href = `/delete_job/${id}`;
+               window.location.href = `/delete_apply/${id}`;
             }
         });
     });
