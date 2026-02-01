@@ -88,28 +88,28 @@
 
                         <div class="mb-4">
                             <label for="" class="mb-2">Description<span class="req">*</span></label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" name="description" id="description" cols="5" rows="5" placeholder="Description">{{ old('description') }}</textarea>
+                            <textarea class="summernote @error('description') is-invalid @enderror" name="description" id="description" cols="5" rows="5" placeholder="Description">{{ old('description') }}</textarea>
                             @error('description')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="mb-4">
                             <label for="" class="mb-2">Benefits</label>
-                            <textarea class="form-control @error('benefits') is-invalid @enderror" name="benefits" id="benefits" cols="5" rows="5" placeholder="Benefits">{{ old('benefits') }}</textarea>
+                            <textarea class="summernote @error('benefits') is-invalid @enderror" name="benefits" id="benefits" cols="5" rows="5" placeholder="Benefits">{{ old('benefits') }}</textarea>
                             @error('benefits')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="mb-4">
                             <label for="" class="mb-2">Responsibility</label>
-                            <textarea class="form-control @error('responsibility') is-invalid @enderror" name="responsibility" id="responsibility" cols="5" rows="5" placeholder="Responsibility">{{ old('responsibility') }}</textarea>
+                            <textarea class="summernote @error('responsibility') is-invalid @enderror" name="responsibility" id="responsibility" cols="5" rows="5" placeholder="Responsibility">{{ old('responsibility') }}</textarea>
                             @error('responsibility')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="mb-4">
                             <label for="" class="mb-2">Qualifications</label>
-                            <textarea class="form-control" name="qualifications" id="qualifications" cols="5" rows="5" placeholder="Qualifications">{{ old('qualifications') }}</textarea>
+                            <textarea class="summernote" name="qualifications" id="qualifications" cols="5" rows="5" placeholder="Qualifications">{{ old('qualifications') }}</textarea>
                         </div>
                         <div class="mb-4">
                             <label for="" class="mb-2">Experience</label>

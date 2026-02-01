@@ -9,6 +9,7 @@
 	<meta name="pinterest" content="nopin" />
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" />
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
@@ -28,6 +29,9 @@
         .save_mark{
             background-color: #00D363 !important;
             color: white !important;
+        }
+        .note-btn-group.btn-group button, .note-btn-group.btn-group .btn{
+             font-size: 13px !important;
         }
     </style>
 </head>
@@ -103,6 +107,7 @@
 </footer> 
 <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('assets/js/bootstrap.bundle.5.1.3.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
 <script src="{{ asset('assets/js/instantpages.5.1.0.min.js') }}"></script>
 <script src="{{ asset('assets/js/lazyload.17.6.0.min.js') }}"></script>
 <script src="{{ asset('assets/js/slick.min.js') }}"></script>
@@ -147,6 +152,21 @@ $.ajaxSetup({
 });
 	
 </script>
+<script>
+$(document).ready(function () {
+    $('.summernote').summernote({
+        height: 220,
+        placeholder: 'Write content here...',
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link']],
+            ['view', ['codeview']]
+        ]
+    });
+});
+</script>
+
 
 </body>
 </html>

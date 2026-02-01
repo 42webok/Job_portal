@@ -55,24 +55,38 @@
                 </div>
 
                 <div class="card border-0 shadow mb-4">
-                    <div class="card-body p-4">
-                        <h3 class="fs-4 mb-1">Change Password</h3>
-                        <div class="mb-4">
-                            <label for="" class="mb-2">Old Password*</label>
-                            <input type="password" placeholder="Old Password" class="form-control">
+                   <form action="{{ route('change_password') }}" method="POST">
+                    @csrf
+                        <div class="card-body p-4">
+                            <h3 class="fs-4 mb-1">Change Password</h3>
+                            <div class="mb-4">
+                                <label for="" class="mb-2">Old Password*</label>
+                               <input type="password" value="{{ old('old_password') }}" name="old_password"
+                                class="form-control @error('old_password') is-invalid @enderror">
+
+                                @error('old_password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-4">
+                                <label for="" class="mb-2">New Password*</label>
+                                <input type="password" value="{{ old('new_password') }}" name="new_password" placeholder="New Password" class="form-control @error('new_password') is-invalid @enderror">
+                            @error('new_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            </div>
+                            <div class="mb-4">
+                                <label for="" class="mb-2">Confirm Password*</label>
+                                <input type="password" value="{{ old('confirm_password') }}" name="confirm_password" placeholder="Confirm Password" class="form-control @error('confirm_password') is-invalid @enderror">
+                            @error('confirm_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            </div>
                         </div>
-                        <div class="mb-4">
-                            <label for="" class="mb-2">New Password*</label>
-                            <input type="password" placeholder="New Password" class="form-control">
+                        <div class="card-footer  p-4">
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
-                        <div class="mb-4">
-                            <label for="" class="mb-2">Confirm Password*</label>
-                            <input type="password" placeholder="Confirm Password" class="form-control">
-                        </div>                        
-                    </div>
-                    <div class="card-footer  p-4">
-                        <button type="button" class="btn btn-primary">Update</button>
-                    </div>
+                   </form>
                 </div>                
             </div>
         </div>

@@ -253,6 +253,28 @@ class MainController extends Controller
 }
 
 
+// change password code start here 
+
+public function changePassword(Request $request){
+    $request->validate([
+        'old_password' => 'required',
+        'new_password' => 'required|min:6',
+        'confirm_password' => 'required|same:new_password',
+    ]);
+
+    
+
+    $user = User::find(Auth::id());
+    if (!Hash::check($request->old_password, $user->password)) {
+        return redirect()->back()->with('error', 'Old password is incorrect.');
+    }
+
+    $user->password = Hash::make($request->new_password);
+    $user->save();
+
+    return redirect()->back()->with('success', 'Password changed successfully.');
+}
+
 
 }
 

@@ -34,6 +34,7 @@ Route::middleware('guest')->group(function(){
 Route::middleware('auth')->group(function(){
     Route::get('profile', [MainController::class, 'profile'])->name('profile');
     Route::get('my_jobs', [MainController::class, 'myJobs'])->name('my_jobs');
+    Route::post('change_password', [MainController::class, 'changePassword'])->name('change_password');
     Route::get('applied_jobs', [MainController::class, 'appliedJobs'])->name('applied_jobs');
     Route::get('saved_jobs', [MainController::class, 'savedJobs'])->name('saved_jobs');
     Route::get('post_job', [MainController::class, 'postJob'])->name('post_job');
