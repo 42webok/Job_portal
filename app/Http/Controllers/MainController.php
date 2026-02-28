@@ -45,7 +45,7 @@ class MainController extends Controller
 
     public function updateProfilePicture(Request $request){
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:3048',
         ]);
 
         if($validator->passes()){
@@ -64,9 +64,13 @@ class MainController extends Controller
             // Update the user's profile image path in the database
             $user->image = $imageName;
             $user->save();
-            return redirect()->back()->with('success', 'Profile image updated successfully.');
+            return response([
+                'success'=> 'Image Updated Success !',
+            ]);
         }else{
-            return redirect()->back()->with('error', 'Profile image update failed. Please try again.');
+           return response([
+                'error'=> 'Image Updated Failed !',
+            ]);
         }
 
          

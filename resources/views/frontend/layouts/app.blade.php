@@ -10,6 +10,7 @@
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+    <link href="{{ asset('assets/css/cropper.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" />
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
@@ -58,7 +59,7 @@
 				@else
 				<a class="btn btn-outline-primary me-3" href="{{ route('login') }}" >Login</a>
 				@endif
-				<a class="btn btn-primary" href="post-job.html" >Post a Job</a>
+				<a class="btn btn-primary" href="{{ route('post_job') }}" >Post a Job</a>
 			</div>
 		</div>
 	</nav>
@@ -78,21 +79,25 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="profileImageForm" method="post" action="{{ route('profile-image-update') }}" enctype="multipart/form-data">
-            @csrf
+        {{-- <form id="profileImageForm" method="post" action="{{ route('profile-image-update') }}" enctype="multipart/form-data"> --}}
+            {{-- @csrf --}}
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Profile Image</label>
-                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"  name="image">
-				@error('image')
-					<p class="text-danger">{{ $message }}</p>
-				@enderror
+                <input type="file" class="form-control" id="image"  name="image">
+                <div id="previewImage">
+                    <img src="" alt="Preview Image" class="img-fluid d-none">
+                </div>
+
+				{{-- @error('image')
+					<p class="text-danger error_image"></p>
+				@enderror --}}
             </div>
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary mx-3">Update</button>
+                <button id="cropBtn" class="btn btn-primary mx-3">Crop & Update</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
             
-        </form>
+        {{-- </form> --}}
       </div>
     </div>
   </div>
@@ -108,6 +113,10 @@
 <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('assets/js/bootstrap.bundle.5.1.3.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+  <!-- Cropper JS -->
+
+<script src="{{ asset('assets/js/cropper.js') }}"></script>
+
 <script src="{{ asset('assets/js/instantpages.5.1.0.min.js') }}"></script>
 <script src="{{ asset('assets/js/lazyload.17.6.0.min.js') }}"></script>
 <script src="{{ asset('assets/js/slick.min.js') }}"></script>
@@ -166,7 +175,109 @@ $(document).ready(function () {
     });
 });
 </script>
+{{-- image cropper code start here  --}}
+<script>
+$(document).ready(function () {
+    let cropper;
+    let selectedImage = document.querySelector('#image');
+    let previewImage = document.querySelector('#previewImage img');
+    let cropperBtn = document.querySelector('#cropBtn');
 
+    selectedImage.addEventListener('change', function(e){
+        let file = e.target.files[0];
+        if (!file) return;
 
+        let reader = new FileReader();
+        reader.onload = function(event){
+            previewImage.src = event.target.result;
+            previewImage.classList.remove('d-none');
+
+            // Wait for image to load before initializing cropper
+            previewImage.onload = function() {
+                // Destroy old cropper if exists
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                // Initialize cropper
+                cropper = new Cropper(previewImage, {
+                    aspectRatio: 1,
+                    viewMode: 1
+                });
+            };
+        };
+        reader.readAsDataURL(file);
+    });
+
+    cropperBtn.addEventListener('click', function (e) {
+        e.preventDefault(); 
+
+        if (!cropper) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Please select and crop an image first',
+                showConfirmButton: false,
+                timer: 3000
+            });
+            return;
+        }
+
+        cropper.getCroppedCanvas({
+            width: 300,
+            height: 300
+        }).toBlob(function (blob) {
+            let formData = new FormData();
+            formData.append('image', blob);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            fetch("{{ route('profile-image-update') }}", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.success,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    
+                    // Close modal and refresh profile image
+                    $('#exampleModal').modal('hide');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else if (data.error) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.error,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+        }, 'image/png');
+    });
+});
+</script>
 </body>
 </html>
