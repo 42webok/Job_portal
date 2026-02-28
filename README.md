@@ -5,6 +5,12 @@ This system allows Employers to post jobs and Candidates to apply online.
 
 ---
 
+## 🚧 Project Status
+
+This project is currently under development.
+New features and improvements are being added regularly.
+
+
 ## 🚀 Features
 
 ### 👤 Authentication
