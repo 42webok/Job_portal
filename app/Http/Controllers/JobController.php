@@ -34,7 +34,9 @@ class JobController extends Controller
 
         // Filter by category
         if($request->category && $request->category != ''){
-            $jobs = $jobs->where('category_id', $request->category);
+            $jobs = $jobs->whereHas('category', function($query) use ($request) {
+                $query->where('slug', $request->category);
+            });
         }
 
         // Filter by experience
@@ -72,7 +74,8 @@ class JobController extends Controller
 
     // Job Details
     public function jobDetails($id){
-        $job = JobModel::with('jobType', 'category')->where('id', $id)->first();
+        $job_id  =  dcrypttId($id);
+        $job = JobModel::with('jobType', 'category')->where('id', $job_id)->first();
         if(!$job){
             abort(404);
         }

@@ -161,7 +161,7 @@ $.ajaxSetup({
 });
 	
 </script>
-<script>
+{{-- <script>
 $(document).ready(function () {
     $('.summernote').summernote({
         height: 220,
@@ -174,7 +174,53 @@ $(document).ready(function () {
         ]
     });
 });
+</script> --}}
+<script>
+  $(document).ready(function() {
+    $('.summernote').summernote({
+      placeholder: 'Write something...',
+      tabsize: 2,
+      height: 260,
+      toolbar: [
+        ['style', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['strikethrough', 'superscript', 'subscript']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['insert', ['link', 'picture', 'video', 'table', 'hr']],
+        ['view', ['fullscreen', 'codeview', 'help']]
+      ]
+    });
+  });
+
+  $('.summernote').summernote({
+    callbacks: {
+        onImageUpload: function(files) {
+            sendFile(files[0], $(this));
+        }
+    }
+});
+
+function sendFile(file, editor) {
+    let data = new FormData();
+    data.append('file', file);
+    $.ajax({
+        url: '/upload-image', // your upload route
+        type: 'POST',
+        data: data,
+        contentType: false,
+        processData: false,
+        success: function(url) {
+            editor.summernote('insertImage', url);
+        },
+        error: function(err) {
+            console.error(err);
+        }
+    });
+}
+
 </script>
+
 {{-- image cropper code start here  --}}
 <script>
 $(document).ready(function () {

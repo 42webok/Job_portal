@@ -38,7 +38,7 @@
                         <select name="category" id="category" class="form-control">
                             <option value="">Select a Category</option>
                             @forelse($categories as $category)
-                                <option @if(request()->category == $category->id) selected @endif value="{{ $category->id }}">{{ $category->name }}</option>
+                                <option @if(request()->category == $category->slug) selected @endif value="{{ $category->slug }}">{{ $category->name }}</option>
                             @empty
                                 <option value="">No Category Found</option>
                             @endforelse
@@ -110,7 +110,7 @@
                                             </div>
 
                                             <div class="d-grid mt-3">
-                                                <a href="{{ route('jobs.details', $job->id) }}" class="btn btn-primary btn-lg">Details</a>
+                                                <a href="{{ route('jobs.details', encryptId($job->id)) }}" class="btn btn-primary btn-lg">Details</a>
                                             </div>
                                         </div>
                                     </div>

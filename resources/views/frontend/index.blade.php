@@ -28,7 +28,7 @@
                     <select name="category" id="category" class="form-control">
                         <option value="">Select a Category</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->slug }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -53,7 +53,7 @@
                 @foreach($categories as $category)
                     <div class="col-lg-4 col-xl-3 col-md-6">
                         <div class="single_catagory">
-                            <a href="{{ route('jobs.index', ['category' => $category->id]) }}"><h4 class="pb-2">{{ $category->name }}</h4></a>
+                            <a href="{{ route('jobs.index', ['category' => $category->slug]) }}"><h4 class="pb-2">{{ $category->name }}</h4></a>
                             <p class="mb-0"> <span>{{ $category->job_details_count }}</span> Available position</p>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                                             </div>
 
                                             <div class="d-grid mt-3">
-                                                <a href="{{ route('jobs.details', $job->id) }}" class="btn btn-primary btn-lg">Details</a>
+                                                <a href="{{ route('jobs.details', encryptId($job->id)) }}" class="btn btn-primary btn-lg">Details</a>
                                             </div>
                                         </div>
                                     </div>
@@ -150,7 +150,7 @@
                                         </div>
 
                                         <div class="d-grid mt-3">
-                                            <a href="{{ route('jobs.details', $job->id) }}" class="btn btn-primary btn-lg">Details</a>
+                                            <a href="{{ route('jobs.details', encryptId($job->id)) }}" class="btn btn-primary btn-lg">Details</a>
                                         </div>
                                     </div>
                                 </div>

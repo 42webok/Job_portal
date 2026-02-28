@@ -3,6 +3,13 @@
 
 @section('main')
 
+    <style>
+        .job_details_area img{
+            width: 100% !important;
+            height: auto !important;
+        }
+    </style>
+
  <section class="section-4 bg-2">    
     <div class="container pt-5">
         <div class="row">

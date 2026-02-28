@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function(){
     Route::get('delete_apply/{id}', [MainController::class, 'deleteApply'])->name('delete_apply');
     Route::get('delete_saved/{id}', [MainController::class, 'deleteSaved'])->name('delete_saved');
     Route::post('profile-image-update', [MainController::class, 'updateProfilePicture'])->name('profile-image-update');
+    Route::post('/upload-image', [MainController::class, 'upload'])->name('summernote.upload');
    
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 });

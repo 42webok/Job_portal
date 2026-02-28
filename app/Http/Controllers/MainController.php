@@ -8,6 +8,7 @@ use App\Models\JobModel;
 use App\Models\JobTypeModel;
 use App\Models\JobApplication;
 use App\Models\SavedJobs;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -138,7 +139,8 @@ class MainController extends Controller
 
 //  edit job code start from here   
     public function editJob($id){
-        $job = JobModel::findOrFail($id);
+        $filter_id = dcrypttId($id);
+        $job = JobModel::findOrFail($filter_id);
         $userId = $job->user_id;
         if($userId != Auth::id()){
             abort(403, 'Unauthorized action.');
@@ -279,7 +281,26 @@ public function changePassword(Request $request){
     return redirect()->back()->with('success', 'Password changed successfully.');
 }
 
+ public function upload(Request $request)
+    {
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
 
+            // Generate unique filename
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Move file to public/uploads
+            $file->move(public_path('uploads'), $filename);
+
+            // Return URL to use in Summernote
+            $url = asset('uploads/' . $filename);
+
+            return response()->json($url);
+        }
+
+        return response()->json(['error' => 'No file uploaded'], 400);
+    }
+    
 }
 
 
