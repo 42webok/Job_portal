@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\PublicProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,13 @@ Route::middleware('auth')->group(function(){
     Route::get('delete_saved/{id}', [MainController::class, 'deleteSaved'])->name('delete_saved');
     Route::post('profile-image-update', [MainController::class, 'updateProfilePicture'])->name('profile-image-update');
     Route::post('/upload-image', [MainController::class, 'upload'])->name('summernote.upload');
+    Route::post('is_public_profile', [PublicProfileController::class, 'isPublicProfile'])->name('is_public_profile');
+
+    // candidate route start from here 
+     Route::get('candidates', [PublicProfileController::class, 'candidates'])->name('candidates');
+     Route::post('save_user_skills', [PublicProfileController::class, 'SaveUserSkills'])->name('save_user_skills');
+     Route::post('remove-user-skill', [PublicProfileController::class,'removeUserSkill'])->name('remove_user_skill');
+
    
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 });

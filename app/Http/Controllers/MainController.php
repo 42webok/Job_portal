@@ -8,6 +8,7 @@ use App\Models\JobModel;
 use App\Models\JobTypeModel;
 use App\Models\JobApplication;
 use App\Models\SavedJobs;
+use App\Models\Skill;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +22,11 @@ class MainController extends Controller
     //
     public function profile(){
         $user = User::where('id', Auth::id())->first();
-        return view("frontend.profile.index", compact('user'));
+        $allSkills = Skill::orderBy('name')->get();
+
+
+        $userSkills = $user->skills()->select('skills.id','skills.name')->get();
+        return view("frontend.profile.index", compact('user' , 'allSkills' , 'userSkills'));
     }
 
     public function profileUpdate(Request $request){

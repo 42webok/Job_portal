@@ -54,6 +54,64 @@
                     </form>
                 </div>
 
+
+
+                 <!-- ADD SKILLS FORM -->
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="fs-4 mb-3">My Skills</h3>
+
+                        <!-- Display selected skills -->
+                        <div id="selected-skills" class="mb-3">
+                            @foreach($userSkills as $skill)
+                                <span style="background: #A8DF8E !important;" class="badge bg-primary me-1 mb-1 notic">
+                                    {{ $skill->name }}
+                                    <i class="fa fa-times remove-skill" data-id="{{ $skill->id }}" style="cursor:pointer;"></i>
+                                </span>
+                            @endforeach
+                        </div>
+
+                        <!-- Add Skills Button -->
+                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#skillsModal">
+                            Add Skills
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SKILLS MODAL -->
+                <div class="modal fade" id="skillsModal" tabindex="-1" aria-labelledby="skillsModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="skillsModalLabel">Add Skills</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        
+                        <input type="text" id="skill-search" class="form-control mb-3" placeholder="Search skills...">
+
+                        <div id="skills-list" class="d-flex flex-wrap">
+                            @foreach($allSkills as $skill)
+                                <span  style="background: #A8DF8E !important; cursor:pointer" class="badge bg-light text-dark skill-item me-1 mb-1" data-id="{{ $skill->id }}" style="cursor:pointer;">
+                                    {{ $skill->name }}
+                                </span>
+                            @endforeach
+                        </div>
+
+                        <p class="mt-3 text-muted small">You can select maximum 10 skills.</p>
+
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" id="save-skills" class="btn btn-primary">Save Skills</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+
                 <div class="card border-0 shadow mb-4">
                    <form action="{{ route('change_password') }}" method="POST">
                     @csrf
@@ -94,3 +152,144 @@
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function(){
+
+    let selectedSkills = @json($userSkills->pluck('id')); // existing skill ids
+
+    // Click skill in modal
+    $('.skill-item').click(function(){
+
+    let skillId = $(this).data('id');
+
+    // REMOVE skill if already selected
+    if(selectedSkills.includes(skillId)){
+
+        selectedSkills = selectedSkills.filter(id => id != skillId);
+
+        $(this).removeClass('bg-primary text-white');
+
+        return;
+    }
+
+    // LIMIT CHECK
+    if(selectedSkills.length >= 10){
+        // alert('');
+         Swal.fire({
+                                                toast: true,
+                                                position: 'top-end',
+                                                icon: 'error',
+                                                title: 'You can select max 10 skills',
+                                                showConfirmButton: false,
+                                                timer: 3000,
+                                                timerProgressBar: true
+                                            });
+        return;
+    }
+
+    // ADD skill
+    selectedSkills.push(skillId);
+
+    $(this).addClass('bg-primary text-white');
+
+});
+
+
+    // Remove skill from badge
+    $(document).on('click','.remove-skill',function(){
+        let skillId = $(this).data('id');
+        selectedSkills = selectedSkills.filter(id => id != skillId);
+        $(this).parent().remove();
+
+        // remove highlight in modal
+        $(`.skill-item[data-id=${skillId}]`).removeClass('bg-primary text-white');
+    });
+
+    // Save skills
+    $('#save-skills').click(function(){
+
+        $.ajax({
+            url:"{{ route('save_user_skills') }}",
+            method:"POST",
+            data:{
+                skills:selectedSkills
+            },
+            success:function(res){
+                if(res.success){
+                    // reload badges
+                    $('#selected-skills').html('');
+                     Swal.fire({
+                                                toast: true,
+                                                position: 'top-end',
+                                                icon: 'success',
+                                                title: 'Skills added success !',
+                                                showConfirmButton: false,
+                                                timer: 3000,
+                                                timerProgressBar: true
+                                            });
+                    res.skills.forEach(skill => {
+                        $('#selected-skills').append(`<span style="background: #A8DF8E !important;"class="badge bg-primary me-1 mb-1">${skill.name} <i class="fa fa-times remove-skill" data-id="${skill.id}" style="cursor:pointer;"></i></span>`);
+                    });
+                    $('#skillsModal').modal('hide');
+                }
+            }
+        });
+
+    });
+
+    // Search skills
+    $('#skill-search').on('keyup',function(){
+        let val = $(this).val().toLowerCase();
+        $('.skill-item').each(function(){
+            let text = $(this).text().toLowerCase();
+            $(this).toggle(text.includes(val));
+        });
+    });
+
+});
+
+$(document).on('click','.remove-skill',function(){
+
+    let skillId = $(this).data('id');
+    let badge = $(this).parent();
+
+    $.ajax({
+        url:"{{ route('remove_user_skill') }}",
+        method:"POST",
+        data:{
+            skill_id:skillId
+        },
+        success:function(res){
+
+            if(res.success){
+
+                // remove from array
+                selectedSkills = selectedSkills.filter(id => id != skillId);
+                 Swal.fire({
+                                                toast: true,
+                                                position: 'top-end',
+                                                icon: 'success',
+                                                title: 'Skills remove success !',
+                                                showConfirmButton: false,
+                                                timer: 3000,
+                                                timerProgressBar: true
+                                            });
+
+                // remove badge
+                badge.remove();
+
+                // remove highlight in modal
+                $(`.skill-item[data-id=${skillId}]`).removeClass('bg-primary text-white');
+
+            }
+
+        }
+    });
+
+});
+
+</script>
+@endpush
+

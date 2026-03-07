@@ -53,6 +53,9 @@
 					<li class="nav-item">
 						<a class="nav-link" aria-current="page" href="{{ route('jobs.index') }}">Find Jobs</a>
 					</li>										
+					<li class="nav-item">
+						<a class="nav-link" aria-current="page" href="{{ route('candidates') }}">Talent / Candidates</a>
+					</li>										
 				</ul>				
 				@if(Auth::check())
 				<a class="btn btn-outline-primary me-3" href="{{ route('profile') }}" >My Profile</a>

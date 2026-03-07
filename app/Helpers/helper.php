@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Crypt;
-
+// to incrypt and dcrypt parm id from url
 if (!function_exists('encryptId')) {
     function encryptId($id){
         $id = Crypt::encryptString($id);
@@ -13,8 +13,9 @@ if (!function_exists('dcrypttId')) {
       try {
             return Crypt::decryptString($id);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
-            abort(404); // invalid or tampered payload
+            abort(404); 
         }
     }
 }
 
+// --------------------------------------------------
