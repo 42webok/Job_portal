@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
@@ -52,8 +51,14 @@ Route::middleware('auth')->group(function(){
 
     // candidate route start from here 
      Route::get('candidates', [PublicProfileController::class, 'candidates'])->name('candidates');
+     Route::get('/candidate/{id}', [PublicProfileController::class, 'candidateDetails'])->name('candidate.details');
      Route::post('save_user_skills', [PublicProfileController::class, 'SaveUserSkills'])->name('save_user_skills');
      Route::post('remove-user-skill', [PublicProfileController::class,'removeUserSkill'])->name('remove_user_skill');
+     Route::post('/save-profile-extra',[PublicProfileController::class,'saveProfileExtra'])
+        ->name('save_profile_extra');
+    Route::post('/upload-resume',[PublicProfileController::class,'uploadResume'])->name('upload.resume');
+
+
 
    
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');

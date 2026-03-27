@@ -34,6 +34,7 @@ class MainController extends Controller
             "name"=> "required|string|max:255",
             "email"=> "required|email|unique:users,email,".Auth::id(),
             "designation"=> "nullable|string|max:255",
+            "location"=> "required|string|max:255",
             "mobile"=> "nullable|string|max:15",
         ]);
         if($validate){
@@ -42,6 +43,7 @@ class MainController extends Controller
             $user->email = $request->email;
             $user->designation = $request->designation;
             $user->mobile = $request->mobile;
+            $user->location = $request->location;
             $user->save();
             return redirect()->back()->with('success', 'Profile updated successfully.');
         }else{

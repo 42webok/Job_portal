@@ -40,7 +40,9 @@ class PublicProfileController extends Controller
     // candidates code start here 
 
     public function candidates(){
-        return view('frontend.candidates.index');
+
+        $candidate = User::with('skills')->where('is_public_profile' , 1)->get();
+        return view('frontend.candidates.index' , compact('candidate'));
     }
 
 
@@ -75,5 +77,57 @@ class PublicProfileController extends Controller
             'success' => true
         ]);
     }
+
+    public function candidateDetails($id)
+        {
+           if(!$id){
+            abort(404);
+           }
+           $user = User::where(['id' => $id , 'is_public_profile' => 1])->first();
+           return view('frontend.candidates.details' , compact('user'));
+        }
+
+        public function saveProfileExtra(Request $request){
+
+            $user = User::find(Auth::id());
+            $user->about = $request->about;
+            $user->experience = $request->experience;
+            $user->experience_details = $request->experience_details;
+            $user->field_of_study = $request->field_of_study;
+            $user->availability = $request->availability;
+            $user->github = $request->github;
+            $user->linkedin = $request->linkedin;
+            $user->portfolio_website = $request->portfolio_website;
+            $user->save();
+
+             return redirect()->back()->with('success','Profile Updated Successfully');
+
+        }
+
+        public function uploadResume(Request $request)
+            {
+                $request->validate([
+                    'resume' => 'required|mimes:pdf|max:2048'
+                ]);
+
+                $user = Auth::user();
+
+                if($request->hasFile('resume'))
+                {
+                    $file = $request->file('resume');
+
+                    $filename = time().'_'.$file->getClientOriginalName();
+
+                    $file->move(public_path('resumes'),$filename);
+
+                    User::where('id',$user->id)->update([
+                        'resume' => $filename
+                    ]);
+                }
+
+                return redirect()->back()->with('success','Resume uploaded successfully');
+            }
+
+
 
 }

@@ -1,6 +1,23 @@
 @extends('frontend.layouts.app')
 
 @section('title','Profile')
+@push('styles')
+<style>
+.resume-upload-box{
+border:2px dashed #ddd;
+padding:30px;
+border-radius:10px;
+transition:0.3s;
+}
+.resume-upload-box:hover{
+border-color:#A8DF8E;
+background:#f8fbff;
+}
+
+</style>
+
+@endpush
+    
 
 @section('main')
     
@@ -40,6 +57,13 @@
                             @enderror
                         </div>
                         <div class="mb-4">
+                            <label for="" class="mb-2">Location*</label>
+                            <input type="text" name="location" placeholder="Enter Location" class="form-control @error('location') is-invalid @enderror" value="{{ $user->location }}">
+                            @error('location')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
                             <label for="" class="mb-2">Designation*</label>
                             <input type="text" name="designation" placeholder="Designation" class="form-control" value="{{ $user->designation }}">
                         </div>
@@ -47,6 +71,7 @@
                             <label for="" class="mb-2">Mobile*</label>
                             <input type="text" name="mobile" placeholder="Mobile" class="form-control" value="{{ $user->mobile }}">
                         </div>
+
                     </div>
                     <div class="card-footer  p-4">
                         <button type="submit" class="btn btn-primary">Update</button>
@@ -109,6 +134,199 @@
                   </div>
                 </div>
 
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-body p-4">
+                        <h3 class="fs-4 mb-3">More Information</h3>
+
+                        <button type="button" 
+                        class="btn btn-outline-primary" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#moreInfoModal">
+                            Add More Information
+                        </button>
+                         <button type="button" 
+                            class="btn btn-outline-dark" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#resumeModal">
+                                <i class="fa fa-upload"></i> {{ $user->resume ? 'Update' : 'Upload' }} Resume
+                        </button>
+                        @if($user->resume && $user->resume != '' )
+                        <a href="{{ asset('resumes/'.$user->resume) }}" target='_blank' class="btn btn-primary">Uploaded Resume</a>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- resume popup  --}}
+
+                <!-- Resume Upload Modal -->
+                <div class="modal fade" id="resumeModal" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Upload Resume</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <form action="{{ route('upload.resume') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="modal-body text-center">
+
+                            <div class="resume-upload-box">
+
+                                <i class="fa fa-file-pdf fa-3x text-danger mb-3"></i>
+
+                                <h5>Upload Your Resume</h5>
+
+                                <p class="text-muted small">
+                                    Only PDF allowed (Max 2MB)
+                                </p>
+
+                                <input type="file" 
+                                name="resume" 
+                                class="form-control mt-3"
+                                accept=".pdf"
+                                required>
+
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+
+                        <button type="submit" class="btn btn-dark w-100">
+                            <i class="fa fa-upload"></i> Upload Resume
+                        </button>
+
+                        </div>
+
+                        </form>
+
+                        </div>
+                        </div>
+                </div>
+
+
+
+                {{-- More Info popup --}}
+
+                <!-- MORE INFO MODAL -->
+                    <div class="modal fade" id="moreInfoModal" tabindex="-1">
+                                        <div class="modal-dialog modal-xl">
+                                        <div class="modal-content px-3">
+
+                                        <form action="{{ route('save_profile_extra') }}" method="POST">
+                                        @csrf
+
+                                        <div class="modal-header">
+                                        <h5 class="modal-title">Add More Information</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+
+                                        <div class="row">
+
+                                        <div class="col-md-12 mb-4">
+                                        <label>About</label>
+                                        <textarea name="about" cols="5" rows="5" class="summernote form-control">
+                                        {{ $user->about ?? '' }}
+                                        </textarea>
+                                        </div>
+
+                                        <div class="col-md-6 mb-4">
+                                        <label>Experience</label>
+                                        <select name="experience" class="form-control">
+                                        <option value="">Select Experience</option>
+                                        <option {{ $user->experience == 'Fresher' ? 'selected' : '' }}>Fresher</option>
+                                        <option {{ $user->experience == '1 Year' ? 'selected' : '' }}>1 Year</option>
+                                        <option {{ $user->experience == '2 Years' ? 'selected' : '' }}>2 Years</option>
+                                        <option {{ $user->experience == '3 Years' ? 'selected' : '' }}>3 Years</option>
+                                        <option {{ $user->experience == '5+ Years' ? 'selected' : '' }}>5+ Years</option>
+                                        </select>
+                                        </div>
+
+                                        <div class="col-md-6 mb-4">
+                                        <label>Availability</label>
+                                        <select name="availability" class="form-control">
+                                        <option value="">Select</option>
+                                        <option {{ $user->availability == 'Full Time' ? 'selected' : '' }}>Full Time</option>
+                                        <option {{ $user->availability == 'Part Time' ? 'selected' : '' }}>Part Time</option>
+                                        <option {{ $user->availability == 'Freelance' ? 'selected' : '' }}>Freelance</option>
+                                        <option {{ $user->availability == 'Open to Hire' ? 'selected' : '' }}>Open to Hire</option>
+                                        </select>
+                                        </div>
+
+                                        <div class="col-md-12 mb-4">
+                                        <label>Experience Details</label>
+                                        <textarea cols="5" rows="5" name="experience_details" class="summernote form-control">
+                                        {{ $user->experience_details ?? '' }}
+                                        </textarea>
+                                        </div>
+
+                                        <div class="col-md-12 mb-4">
+                                        <label>Field Of Study</label>
+                                        <textarea cols="5" rows="5" name="field_of_study" class="summernote form-control">
+                                        {{ $user->field_of_study ?? '' }}
+                                        </textarea>
+                                        </div>
+
+                                        <hr>
+
+                                        <h5 class="mb-3">Social Links</h5>
+
+                                        <div class="col-md-4 mb-3">
+                                        <label>Github</label>
+                                        <input type="text" 
+                                        name="github" 
+                                        class="form-control" 
+                                        value="{{ $user->github }}">
+                                        </div>
+
+                                        <div class="col-md-4 mb-3">
+                                        <label>Linkedin</label>
+                                        <input type="text" 
+                                        name="linkedin" 
+                                        class="form-control" 
+                                        value="{{ $user->linkedin }}">
+                                        </div>
+
+                                        <div class="col-md-4 mb-3">
+                                        <label>Portfolio Website</label>
+                                        <input type="text" 
+                                        name="portfolio_website" 
+                                        class="form-control" 
+                                        value="{{ $user->portfolio_website }}">
+                                        </div>
+
+                                        </div>
+
+                                        </div>
+
+                                        <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">
+                                        Save Information
+                                        </button>
+
+                                        <button type="button" 
+                                        class="btn btn-secondary" 
+                                        data-bs-dismiss="modal">
+                                        Close
+                                        </button>
+
+                                        </div>
+
+                                        </form>
+
+                                        </div>
+                                        </div>
+                    </div>
+
+
+
+
+
 
 
 
@@ -156,6 +374,9 @@
 @push('scripts')
 <script>
 $(document).ready(function(){
+
+       
+
 
     let selectedSkills = @json($userSkills->pluck('id')); // existing skill ids
 
