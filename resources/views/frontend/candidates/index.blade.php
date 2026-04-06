@@ -40,24 +40,31 @@
             <div class="row g-3">
 
                 <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="Search skills (Laravel, React...)">
+                    <input type="text" class="form-control" id="skillSearch" placeholder="Search skills (Laravel, React...)">
                 </div>
 
                 <div class="col-md-3">
-                    <input type="text" class="form-control" placeholder="Location">
+                    <input type="text" class="form-control" id="locationSearch" placeholder="Location">
                 </div>
 
                 <div class="col-md-3">
-                    <select class="form-control">
+                    <select class="form-control" id="experienceSearch">
                         <option value="">Experience</option>
                         <option>1 Year</option>
                         <option>2 Years</option>
-                        <option>3+ Years</option>
+                        <option>3 Years</option>
+                        <option>4 Years</option>
+                        <option>5 Years</option>
+                        <option>6 Years</option>
+                        <option>7 Years</option>
+                        <option>8 Years</option>
+                        <option>9 Years</option>
+                        <option>10 Years</option>
                     </select>
                 </div>
 
                 <div class="col-md-2">
-                    <button class="btn btn-primary w-100">Search</button>
+                    <button class="btn btn-primary w-100" id="searchButton">Search</button>
                 </div>
 
             </div>
@@ -66,7 +73,7 @@
 
 
         <!-- CANDIDATES -->
-        <div class="row">
+        <div class="row" id="candidateList">
 
             @forelse($candidate as $user)
 
@@ -119,7 +126,7 @@
 
                         <!-- ACTION -->
                         <div class="d-grid">
-                            <a href="{{ route('candidate.details' ,  $user->id) }}" class="btn btn-primary btn-sm">View Profile</a>
+                            <a href="{{ route('candidate.details' ,  encryptId($user->id)) }}" class="btn btn-primary btn-sm">View Profile</a>
                         </div>
 
                     </div>
@@ -132,7 +139,16 @@
 
             @endforelse
 
+             <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex justify-content-center">
+                            {{ $candidate->links() }}
+                        </div>
+                    </div>
+                </div>
+
         </div>
+        <div id="pagination"></div>
 
     </div>
 </section>
@@ -154,7 +170,7 @@
 
 /* SKILL BADGES */
 .skill-badge{
-    background:#111111c2;
+    background:#111111c2 !important;
     color:#A8DF8E !important;
     margin:2px;
     padding:5px 10px;
@@ -167,4 +183,138 @@
     backdrop-filter: blur(10px);
     background: rgba(255,255,255,0.95);
 }
+.light-theme .current {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-color: #444;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 1), 0 0 2px rgba(0, 0, 0, 0.3) inset;
+    cursor: default;
+}
 </style>
+
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/simplePagination.css">
+
+<script>
+    $(document).ready(function(){
+       let searchButton = $('#searchButton');
+       $('#skillSearch, #locationSearch, #experienceSearch').on('keypress', function(e){
+            if(e.which == 13){
+                searchButton.click();
+            }
+        });
+       let skillSearch = $('#skillSearch');
+       let locationSearch = $('#locationSearch');
+       let experienceSearch = $('#experienceSearch');
+        
+      function loadCandidates(page = 1){
+           
+           let skill = skillSearch.val();
+           let location = locationSearch.val();
+           let experience = experienceSearch.val();
+        
+           $.ajax({
+               url:"{{ route('candidate.search') }}",
+               method:"GET",
+              data:{ 
+                    skill:skill, 
+                    location:location, 
+                    experience:experience,
+                    page: page
+                },
+               success:function(response){
+                     // Clear current candidates
+                     console.log(response);
+                     $('#candidateList').empty();
+
+                     if(response.candidates.data.length > 0){
+                          response.candidates.data.forEach(function(candidate){
+                            let candidateCard = `
+                                 <div class="col-md-4">
+
+                                <div class="card border-0 shadow candidate-card mb-4">
+
+                                    <div class="card-body">
+
+                                        <div class="position-relative">
+                                            <div class="d-flex align-items-center mb-3">
+
+                                                ${candidate.image ? `<img src="/uploads/profile_images/${candidate.image}" class="w-25 img-fluid rounded-circle me-3">` : `<img src="{{ asset('assets/images/avatar7.png') }}" class="w-25 img-fluid rounded-circle me-3">` }
+                                                <div>
+                                                <h5 class="mb-0">${candidate.name}</h5>
+                                                <small class="text-muted">${candidate.designation}</small>
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <span class="badge bg-success mb-2">Open to Work</span>
+
+                                        <!-- LOCATION -->
+                                        <p class="mb-2 text-muted">
+                                            <i class="fa fa-map-marker"></i> ${candidate.location}
+                                        </p>
+
+                                        
+                                        <div class="skills mb-3">
+                                            ${candidate.skills.length > 0 ? candidate.skills.map(skill => `<span class="badge skill-badge">${skill.name}</span>`).join('') : `<span class="badge skill-badge">no skill mention</span>`}
+
+                                        </div>
+
+                                       
+                                        <div class="d-flex justify-content-between mb-3 small text-muted">
+
+                                            <span>⭐ 4.8 Rating</span>
+                                            <span>💼 ${candidate.experience ? candidate.experience : 'Fresher'}</span>
+
+                                        </div>
+
+                                       
+                                        <div class="d-grid">
+                                           <a href="/candidate/${candidate.encrypted_id}" 
+                                                class="btn btn-primary btn-sm">View Profile</a>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            `;
+                            $('#candidateList').append(candidateCard);
+                          });
+                          $('#pagination').pagination('destroy');
+                          $('#pagination').pagination({
+                                items: response.candidates.total,
+                                itemsOnPage: response.candidates.per_page,
+                                currentPage: response.candidates.current_page,
+                                cssStyle: 'light-theme',
+                                triggerPagingOnInit: false,
+                                onPageClick: function(pageNumber) {
+                                    loadCandidates(pageNumber);
+                                }
+                            });
+                     } else {
+                         $('#candidateList').append('<h4>No candidates found!</h4>');
+                     }
+                
+               },
+               error:function(error){
+                   console.error("Search error:", error);
+               }
+           });
+         }
+         searchButton.on('click', function(){
+              loadCandidates();
+         });
+    });
+</script>
+
+
+
+
+
+
+@endpush

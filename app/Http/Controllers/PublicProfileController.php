@@ -41,7 +41,7 @@ class PublicProfileController extends Controller
 
     public function candidates(){
 
-        $candidate = User::with('skills')->where('is_public_profile' , 1)->get();
+        $candidate = User::with('skills')->where('is_public_profile' , 1)->paginate(9);
         return view('frontend.candidates.index' , compact('candidate'));
     }
 
@@ -80,12 +80,13 @@ class PublicProfileController extends Controller
 
     public function candidateDetails($id)
         {
-           if(!$id){
+        if(!$id){
             abort(404);
-           }
-           $user = User::where(['id' => $id , 'is_public_profile' => 1])->first();
-           return view('frontend.candidates.details' , compact('user'));
         }
+        $decript_id = dcrypttId($id);
+        $user = User::where(['id' => $decript_id , 'is_public_profile' => 1])->first();
+        return view('frontend.candidates.details' , compact('user'));
+    }
 
         public function saveProfileExtra(Request $request){
 
@@ -127,7 +128,36 @@ class PublicProfileController extends Controller
 
                 return redirect()->back()->with('success','Resume uploaded successfully');
             }
+            
+        public function candidateSearch(Request $request){
+            $query = User::with('skills')->where('is_public_profile', 1);
 
+            if ($request->filled('skill')) {
+                $query->whereHas('skills', function($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->skill . '%');
+                });
+            }
+
+            if ($request->filled('location')) {
+                $query->where('location', 'like', '%' . $request->location . '%');
+            }
+
+            if ($request->filled('experience')) {
+                $query->where('experience', 'like', '%' . $request->experience . '%');
+            }
+
+            $candidates = $query->paginate(9)->appends($request->all());
+           
+            $candidates->getCollection()->transform(function ($candidate) {
+                $candidate->encrypted_id = encryptId($candidate->id);
+                return $candidate;
+            });
+
+            return response()->json([
+                'success' => true,
+                'candidates' => $candidates
+            ]);
+        }
 
 
 }

@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function(){
      Route::post('/save-profile-extra',[PublicProfileController::class,'saveProfileExtra'])
         ->name('save_profile_extra');
     Route::post('/upload-resume',[PublicProfileController::class,'uploadResume'])->name('upload.resume');
+    Route::get('/candidate-search',[PublicProfileController::class,'candidateSearch'])->name('candidate.search');
 
 
 
