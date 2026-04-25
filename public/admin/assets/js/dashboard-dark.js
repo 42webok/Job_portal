@@ -2,6 +2,7 @@
   'use strict';
   if ($("#visit-sale-chart").length) {
     const ctx = document.getElementById('visit-sale-chart');
+    alert(chartJobs);
 
     var graphGradient1 = document.getElementById('visit-sale-chart').getContext("2d");
     var graphGradient2 = document.getElementById('visit-sale-chart').getContext("2d");
@@ -22,7 +23,7 @@
     gradientStrokeRed.addColorStop(1, 'rgba(254, 112, 150, 1)');
     var gradientLegendRed = 'linear-gradient(to right, rgba(255, 191, 150, 1), rgba(254, 112, 150, 1))';
     const bgColor1 = ["rgba(218, 140, 255, 1)"];
-    const bgColor2 = ["rgba(54, 215, 232, 1"];
+    const bgColor2 = ["rgba(54, 215, 232, 1)"];
     const bgColor3 = ["rgba(255, 191, 150, 1)"];
 
     new Chart(ctx, {
@@ -30,7 +31,7 @@
       data: {
         labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG'],
         datasets: [{
-          label: "CHN",
+          label: "Jobs",
           borderColor: gradientStrokeViolet,
           backgroundColor: gradientStrokeViolet,
           fillColor: bgColor1,
@@ -39,12 +40,12 @@
           fill: false,
           borderWidth: 1,
           fill: 'origin',
-          data: [20, 40, 15, 35, 25, 50, 30, 20],
+          data: chartJobs,
           barPercentage: 0.5,
           categoryPercentage: 0.5,
         },
         {
-          label: "USA",
+          label: "Applications",
           borderColor: gradientStrokeRed,
           backgroundColor: gradientStrokeRed,
           hoverBackgroundColor: gradientStrokeRed,
@@ -53,12 +54,12 @@
           fill: false,
           borderWidth: 1,
           fill: 'origin',
-          data: [40, 30, 20, 10, 50, 15, 35, 40],
+          data: chartJobsApplications,
           barPercentage: 0.5,
           categoryPercentage: 0.5,
         },
         {
-          label: "UK",
+          label: "Users",
           borderColor: gradientStrokeBlue,
           backgroundColor: gradientStrokeBlue,
           hoverBackgroundColor: gradientStrokeBlue,
@@ -67,7 +68,7 @@
           fill: false,
           borderWidth: 1,
           fill: 'origin',
-          data: [70, 10, 30, 40, 25, 50, 15, 30],
+          data: chartUsers,
           barPercentage: 0.5,
           categoryPercentage: 0.5,
         }
