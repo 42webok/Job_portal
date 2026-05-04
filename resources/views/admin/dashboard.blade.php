@@ -1,6 +1,7 @@
 
 @extends('admin.layout.app')
 @php
+   if (!function_exists('formatMonthlyData')) {
     function formatMonthlyData($data) {
         $result = [];
 
@@ -10,6 +11,7 @@
 
         return $result;
     }
+  }
 
     $chart_jobs = formatMonthlyData($chart_jobs);
     $chart_jobs_applications = formatMonthlyData($chart_jobs_applications);
@@ -92,63 +94,40 @@
               <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Recent Tickets</h4>
+                    <h4 class="card-title">Recent Jobs</h4>
                     <div class="table-responsive">
                       <table class="table">
                         <thead>
                           <tr>
-                            <th> Assignee </th>
-                            <th> Subject </th>
+                            <th> Title </th>
+                            <th> User </th>
+                            <th> Category </th>
+                            <th> Salary </th>
+                            <th> Company </th>
                             <th> Status </th>
-                            <th> Last Update </th>
-                            <th> Tracking ID </th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
+                         @forelse($recent_jobs as $recent_jobs)
+                           <tr>
                             <td>
-                              <img src="{{ asset('admin/assets/images/faces/face1.jpg') }}" class="me-2" alt="image"> David Grey
+                              {{ $recent_jobs->title  }}
                             </td>
-                            <td> Fund is not recieved </td>
+                            <td> {{ $recent_jobs->user->name }} </td>
                             <td>
-                              <label class="badge badge-gradient-success">DONE</label>
+                               {{  $recent_jobs->category->name }}
                             </td>
-                            <td> Dec 5, 2017 </td>
-                            <td> WD-12345 </td>
+                            <td>  {{ $recent_jobs->salary }} </td>
+                            <td>  {{ $recent_jobs->company_name }} </td>
+                            <td>  <span class="badge {{ $recent_jobs->status == 1 ? 'bg-success' : 'bg-danger' }}">{{ $recent_jobs->status == 1 ? 'Active' : 'Inactive' }}</span> </td>
                           </tr>
-                          <tr>
-                            <td>
-                              <img src="{{ asset('admin/assets/images/faces/face2.jpg') }}" class="me-2" alt="image"> Stella Johnson
-                            </td>
-                            <td> High loading time </td>
-                            <td>
-                              <label class="badge badge-gradient-warning">PROGRESS</label>
-                            </td>
-                            <td> Dec 12, 2017 </td>
-                            <td> WD-12346 </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <img src="{{ asset('admin/assets/images/faces/face3.jpg') }}" class="me-2" alt="image"> Marina Michel
-                            </td>
-                            <td> Website down for one week </td>
-                            <td>
-                              <label class="badge badge-gradient-info">ON HOLD</label>
-                            </td>
-                            <td> Dec 16, 2017 </td>
-                            <td> WD-12347 </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <img src="{{ asset('admin/assets/images/faces/face4.jpg') }}" class="me-2" alt="image"> John Doe
-                            </td>
-                            <td> Loosing control on server </td>
-                            <td>
-                              <label class="badge badge-gradient-danger">REJECTED</label>
-                            </td>
-                            <td> Dec 3, 2017 </td>
-                            <td> WD-12348 </td>
-                          </tr>
+
+
+                         @empty
+                            <tr>
+                              <td colspan="5" class="text-center">No recent jobs found.</td>
+                            </tr>
+                         @endforelse
                         </tbody>
                       </table>
                     </div>
@@ -156,5 +135,49 @@
                 </div>
               </div>
             </div>
+
+              <div class="row">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Recent Users</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th> Name </th>
+                            <th> Email </th>
+                            <th> Mobile </th>
+                            <th> Designation </th>
+                            <th> Is Public </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                         @forelse($recent_users as $recent_users)
+                           <tr>
+                            <td>
+                              {{ $recent_users->name  }}
+                            </td>
+                            <td> {{ $recent_users->email }} </td>
+                            <td> {{ $recent_users->mobile }} </td>
+                            <td> {{ $recent_users->designation }} </td>
+                            <td> <span class="badge {{ $recent_users->is_public_profile == 1 ? 'bg-success' : 'bg-danger' }}">{{ $recent_users->is_public_profile == 1 ? 'Yes' : 'No' }}</span> </td>
+                          </tr>
+
+
+                         @empty
+                            <tr>
+                              <td colspan="5" class="text-center">No recent users found.</td>
+                            </tr>
+                         @endforelse
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
           </div>
 @endsection

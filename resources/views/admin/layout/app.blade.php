@@ -17,6 +17,16 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{{ asset('admin/assets/images/favicon.png') }}" />
+    <style>
+      .page-link.active, .active > .page-link  {
+          color:white !important;
+          background-color: #b66dff !important;
+          border-color: #b66dff !important;
+      }
+      .page-link {
+          color: #b66dff !important;
+      }
+    </style>
   </head>
   <body>
     <div class="container-scroller">
@@ -192,6 +202,13 @@
               <a class="nav-link" href="{{ route('admin.dashboard') }}">
                 <span class="menu-title">Dashboard</span>
                 <i class="mdi mdi-home menu-icon"></i>
+              </a>
+            </li>
+            {{-- manage users --}}
+            <li class="nav-item @if(Route::currentRouteName() == 'admin.users.create' || Route::currentRouteName() == 'admin.users.edit') active @endif">
+              <a class="nav-link" href="{{ route('admin.users.index') }}">
+                <span class="menu-title">Manage Users</span>
+                <i class="mdi mdi-account menu-icon"></i>
               </a>
             </li>
             

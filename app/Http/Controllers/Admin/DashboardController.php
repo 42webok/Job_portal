@@ -27,6 +27,10 @@ class DashboardController extends Controller
         ->groupBy('month')
         ->pluck('total', 'month');
 
-        return view('admin.dashboard', compact('total_users' , 'total_jobs' , 'total_categories', 'chart_jobs', 'chart_jobs_applications', 'chart_users'));
+        // get recent jobs and recent users
+        $recent_jobs = JobModel::with('category' , 'user')->orderBy('created_at', 'desc')->take(5)->get();
+       $recent_users = User::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('admin.dashboard', compact('total_users' , 'total_jobs' , 'total_categories', 'chart_jobs', 'chart_jobs_applications', 'chart_users' , 'recent_jobs', 'recent_users'));
     }
 }

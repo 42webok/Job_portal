@@ -84,6 +84,11 @@ class PublicProfileController extends Controller
             abort(404);
         }
         $decript_id = dcrypttId($id);
+        if(session()->has('admin_id')){
+            $user = User::where(['id' => $decript_id])->first();
+            return view('frontend.candidates.details' , compact('user'));
+
+        }
         $user = User::where(['id' => $decript_id , 'is_public_profile' => 1])->first();
         return view('frontend.candidates.details' , compact('user'));
     }
