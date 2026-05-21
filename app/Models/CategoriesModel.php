@@ -12,6 +12,7 @@ class CategoriesModel extends Model
     protected $primaryKey = "id";
     protected $fillable = [
         'name',
+        'slug',
         'status',
         'created_at',
         'updated_at',

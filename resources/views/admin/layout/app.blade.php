@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
     <!-- End layout styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="{{ asset('admin/assets/images/favicon.png') }}" />
     <style>
       .page-link.active, .active > .page-link  {
@@ -26,11 +27,15 @@
       .page-link {
           color: #b66dff !important;
       }
+      .btn-primary{
+          background-color: #b66dff !important;
+          border-color: #b66dff !important;
+      }
     </style>
   </head>
   <body>
+    
     <div class="container-scroller">
-     
       <!-- partial:partials/_navbar.html -->
       <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
@@ -211,12 +216,19 @@
                 <i class="mdi mdi-account menu-icon"></i>
               </a>
             </li>
+            {{-- manage categories --}}
+            <li class="nav-item @if(Route::currentRouteName() == 'admin.categories.create' || Route::currentRouteName() == 'admin.categories.edit') active @endif">
+              <a class="nav-link" href="{{ route('admin.categories.index') }}">
+                <span class="menu-title">Manage Categories</span>
+                <i class="mdi mdi-tag menu-icon"></i>
+              </a>
+            </li>
             
           </ul>
         </nav>
         <!-- partial -->
         <div class="main-panel">
-          
+          @include('admin.partials.alerts')
            
                 @yield('content')
              
@@ -239,6 +251,7 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="{{ asset('admin/assets/vendors/js/vendor.bundle.base.js') }}"></script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <script src="{{ asset('admin/assets/vendors/chart.js/chart.umd.js') }}"></script>
@@ -251,6 +264,7 @@
     <script src="{{ asset('admin/assets/js/todolist.js') }}"></script>
     <script src="{{ asset('admin/assets/js/jquery.cookie.js') }}"></script>
     <!-- endinject -->
+   
     <!-- Custom js for this page -->
     <script src="{{ asset('admin/assets/js/dashboard.js') }}"></script>
     <!-- End custom js for this page -->
