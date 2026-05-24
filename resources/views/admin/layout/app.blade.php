@@ -31,6 +31,9 @@
           background-color: #b66dff !important;
           border-color: #b66dff !important;
       }
+      select.form-control{
+        color: var(--bs-body-color) !important;
+      }
     </style>
   </head>
   <body>
@@ -223,6 +226,20 @@
                 <i class="mdi mdi-tag menu-icon"></i>
               </a>
             </li>
+            {{-- manage jobs --}}
+            <li class="nav-item @if(Route::currentRouteName() == 'jobs.create' || Route::currentRouteName() == 'jobs.edit') active @endif">
+              <a class="nav-link" href="{{ route('jobs.index') }}">
+                <span class="menu-title">Manage Jobs</span>
+                <i class="mdi mdi-briefcase menu-icon"></i>
+              </a>
+            </li>
+            {{-- manage skills --}}
+            <li class="nav-item @if(Route::currentRouteName() == 'skills.create' || Route::currentRouteName() == 'skills.edit') active @endif">
+              <a class="nav-link" href="{{ route('skills.index') }}">
+                <span class="menu-title">Manage Skills</span>
+                <i class="mdi mdi-brain menu-icon"></i>
+              </a>
+            </li>
             
           </ul>
         </nav>
@@ -268,5 +285,6 @@
     <!-- Custom js for this page -->
     <script src="{{ asset('admin/assets/js/dashboard.js') }}"></script>
     <!-- End custom js for this page -->
+    @stack('script')
   </body>
 </html>

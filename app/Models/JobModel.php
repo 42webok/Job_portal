@@ -13,6 +13,7 @@ class JobModel extends Model
     protected $fillable = [
         'title',
         'category_id',
+        'user_id',
         'description',
         'job_type_id',
         'vacancy',
@@ -26,6 +27,7 @@ class JobModel extends Model
         'company_name',
         'company_website',
         'company_location',
+        'is_featured',
         'created_at',
         'updated_at',
         'status',

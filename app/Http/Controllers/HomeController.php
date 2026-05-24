@@ -24,8 +24,8 @@ class HomeController extends Controller
         }
     ])
     ->get();
-    $featuredJobs = JobModel::where('is_featured', 1)->where('status', 1)->with('category', 'jobType')->latest()->take(6)->get();
-    $latestJobs = JobModel::where('status', 1)->with('category', 'jobType')->latest()->take(6)->get();
+    $featuredJobs = JobModel::where('is_featured', '1')->where('status', 1)->with('category', 'jobType')->orderBy('created_at', 'desc')->take(6)->get();
+    $latestJobs = JobModel::where('status', 1)->with('category', 'jobType')->orderBy('created_at', 'desc')->take(6)->get();
     return view('frontend.index', compact('categories', 'featuredJobs', 'latestJobs'));
    }
 

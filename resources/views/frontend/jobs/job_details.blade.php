@@ -124,7 +124,7 @@
                                     </li>
                                     <li>
                                         @if($job->company_website)
-                                       <span><a href="{{ $job->company_website }}" class="btn btn-primary btn-sm">Visit Website</a></span>
+                                       <span><a href="{{ $job->company_website }}" target="_blank" class="btn btn-primary btn-sm">Visit Website</a></span>
                                        @endif
                                     </li>
                                 </ul>
